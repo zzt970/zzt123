@@ -458,6 +458,28 @@ html[data-theme="dark"] .lv-sch{color:#f4b400}
 .sc-zoom svg{width:14px;height:14px;stroke:var(--text-2);fill:none;stroke-width:2}
 
 /* ============================================================
+   8.5 联系（页尾，看完即联系，不必滚回顶部）
+   ============================================================ */
+.ct-card{display:flex;flex-direction:column;gap:20px}
+.ct-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.ct-row{
+  display:flex;align-items:center;gap:12px;min-width:0;width:100%;text-align:left;
+  padding:13px 15px;border-radius:13px;background:var(--surface-2);border:1px solid var(--border);
+  font-family:inherit;font-size:inherit;color:var(--text);
+  transition:transform var(--dur) var(--ease),border-color var(--dur) var(--ease),background var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
+}
+button.ct-row{cursor:pointer}
+button.ct-row:hover,button.ct-row:focus-visible{border-color:var(--border-strong);background:var(--surface);transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.ct-ico{width:36px;height:36px;border-radius:11px;flex:none;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand)}
+.ct-ico svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ct-body{min-width:0;display:flex;flex-direction:column;gap:1px}
+.ct-k{font-size:11.5px;font-weight:600;letter-spacing:.1em;color:var(--muted);line-height:1.3}
+.ct-v{font-size:15px;font-weight:700;line-height:1.35;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.ct-row .cpy{width:14px;height:14px;flex:none;margin-left:auto;stroke:var(--muted);fill:none;stroke-width:2;opacity:.5;transition:opacity var(--dur) var(--ease)}
+button.ct-row:hover .cpy,button.ct-row:focus-visible .cpy{opacity:.9;stroke:var(--brand)}
+.ct-acts{display:flex;gap:10px;flex-wrap:wrap}
+
+/* ============================================================
    9. 页脚 / 浮动控件
    ============================================================ */
 footer{border-top:1px solid var(--border);padding:30px 0 40px;color:var(--muted);font-size:12.8px;background:var(--bg-2)}
@@ -507,14 +529,46 @@ footer a{color:var(--brand);font-weight:600}
 .cover-motto{
   display:inline-block;text-align:left;margin:0;margin-right:-.16em;font-weight:700;
   font-family:"Songti SC","STSong","KaiTi","楷体","STKaiti","Noto Serif SC","Source Han Serif SC",serif;
-  /* 错开后整块宽约 8.1em，按视口反推字号，窄屏也不会溢出 */
-  font-size:clamp(20px,calc((100vw - 56px) / 8.4),80px);
+  /* 错开后整块宽约 8.3em（含字距与缩进），按视口反推字号。
+     除数取 9.6 是为了给字体回退留余量：手机上没有宋体/楷体，会回退成
+     系统无衬线字体，字面往往比公式预估更宽，8.4 会让「人生不言弃」被拆行。 */
+  font-size:clamp(20px,calc((100vw - 56px) / 9.6),80px);
   line-height:1.34;letter-spacing:.16em;
   color:var(--text);text-shadow:0 0 46px var(--brand-soft),0 2px 16px rgba(16,24,40,.05);
 }
-.cover-motto span{display:block}
+/* 每行都不许折行：宁可整体略微收紧，也不能把「人生不言弃」拆成两行 */
+.cover-motto .cm-line{display:block;white-space:nowrap}
 /* 第二个字起缩进 = 2 个字的字宽（1em 字面 + .16em 字距） */
-.cover-motto span:nth-child(2){margin-left:2.32em}
+.cover-motto .cm-line:nth-child(2){margin-left:2.32em}
+/* ---- 逐字「书写」动画 ----
+   每个字一个 <i>，用 mask 从左往右扫出，配合逐字递增的延迟，
+   视觉上就是「一笔一笔把字写出来」。总时长 ≈ 0.46 + 9×0.115 ≈ 1.5s。
+   纯 CSS 拿不到字形笔画路径（那需要外部字体数据，与「零外链」冲突），
+   所以用「按书写方向从左往右扫出」做等效近似。
+   只在支持 mask 且未开启「减少动态效果」时才启用；否则退回静态文字。 */
+.cover-motto i{font-style:normal;display:inline-block}
+@supports ((-webkit-mask-image:linear-gradient(#000,#000)) or (mask-image:linear-gradient(#000,#000))){
+  @media (prefers-reduced-motion:no-preference){
+    .cover-motto i{
+      /* 遮罩宽 2 个字：黑→透明的分界扫过一个字宽，正好把字「写」出来。
+         起点 175% 时遮罩已完全移出字外（不可见），终点 0% 时整字显现。 */
+      -webkit-mask-image:linear-gradient(90deg,#000 0%,#000 50%,transparent 75%);
+              mask-image:linear-gradient(90deg,#000 0%,#000 50%,transparent 75%);
+      -webkit-mask-size:200% 100%;        mask-size:200% 100%;
+      -webkit-mask-repeat:no-repeat;      mask-repeat:no-repeat;
+      -webkit-mask-position:175% 0;       mask-position:175% 0;
+      animation:cmWrite .46s cubic-bezier(.34,.72,.3,1) forwards;
+      animation-delay:calc(var(--i,0) * .115s);
+    }
+  }
+}
+@keyframes cmWrite{
+  from{-webkit-mask-position:175% 0;mask-position:175% 0}
+  to{-webkit-mask-position:0% 0;mask-position:0% 0}
+}
+@media (prefers-reduced-motion:reduce){
+  .cover-motto i{-webkit-mask-image:none;mask-image:none;animation:none}
+}
 .cover-rule{
   display:block;width:104px;height:2px;margin:28px auto 0;border-radius:2px;
   background:linear-gradient(90deg,transparent,var(--brand) 20%,var(--brand-2) 50%,var(--brand) 80%,transparent);
@@ -552,14 +606,18 @@ footer a{color:var(--brand);font-weight:600}
 @media (max-width:720px){
   .wrap{width:min(1200px,100% - 28px)}
   section{padding:48px 0}
-  .nav-links{display:none}
   .nav .wrap{gap:8px}
-  .brand small{display:none}
+  /* 手机：导航不再隐藏，改成一条可横向滑动的区块标签（品牌文字让位，只留 logo 方块） */
+  .nav-links{display:flex;flex:1 1 auto;min-width:0;margin-left:2px;-webkit-overflow-scrolling:touch}
+  .nav-links a{padding:7px 9px;font-size:12.5px}
+  .brand #brandName{display:none}
   .grid-4,.grid-3,.grid-2,.grid-5{grid-template-columns:1fr}
   .hero-actions .btn{flex:1;justify-content:center}
   /* 窄屏：两栏并排放不下，改回上下堆叠，联系方式仍是单栏 */
   .ac-cols{grid-template-columns:1fr;gap:16px}
   .ac-row .cpy{display:none}
+  /* 页尾联系：窄屏改单列 */
+  .ct-list{grid-template-columns:1fr}
   /* 描述型条目在窄屏改成上下排 */
   .desc-row{grid-template-columns:1fr;gap:5px;padding-top:12px}
 }
@@ -685,8 +743,11 @@ footer a{color:var(--brand);font-weight:600}
 
 <!-- ================= 封面首屏（座右铭 + 姓名） ================= -->
 <section class="cover" id="cover" aria-label="封面">
-  <div class="cover-inner reveal">
-    <p class="cover-motto"><span>纵有疾风起</span><span>人生不言弃</span></p>
+  <div class="cover-inner">
+    <p class="cover-motto" aria-label="纵有疾风起，人生不言弃">
+      <span class="cm-line" aria-hidden="true"><i style="--i:0">纵</i><i style="--i:1">有</i><i style="--i:2">疾</i><i style="--i:3">风</i><i style="--i:4">起</i></span>
+      <span class="cm-line" aria-hidden="true"><i style="--i:5">人</i><i style="--i:6">生</i><i style="--i:7">不</i><i style="--i:8">言</i><i style="--i:9">弃</i></span>
+    </p>
     <span class="cover-rule" aria-hidden="true"></span>
     <p class="cover-name" id="coverName">钟梓涛</p>
   </div>
@@ -831,6 +892,33 @@ footer a{color:var(--brand);font-weight:600}
     </div>
   </section>
 
+  <!-- ================= 联系（放在最后：看完即联系，不必滚回顶部） ================= -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <span class="eyebrow">Contact</span>
+          <h2>欢迎联系</h2>
+          <div class="sub">如果觉得合适，竞赛、项目实践或社团合作，都可以直接找我聊。</div>
+        </div>
+        <div class="line"></div>
+      </div>
+      <div class="card ct-card reveal">
+        <div class="ct-list" id="contactList"></div>
+        <div class="ct-acts">
+          <a class="btn btn-primary" id="contactMail" href="#">
+            <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+            <span>发邮件给我</span>
+          </a>
+          <button class="btn" id="contactPrint" type="button">
+            <svg viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v7H6z"/></svg>
+            <span>打印简历</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <footer>
@@ -853,6 +941,8 @@ footer a{color:var(--brand);font-weight:600}
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- 鼠标跟随柔光：仅桌面端显示，由 JS 开关 -->
 
 <!-- ================= 打印专用精简版（由 resume 数据生成，仅打印时可见） ================= -->
 <div id="printDoc" aria-hidden="true"></div>
@@ -1504,6 +1594,40 @@ const resume = {
     sec.hidden = false;
   }
 
+  /* ---------- 页尾联系（复用 profile.contacts 数据） ---------- */
+  function renderContact() {
+    const sec = $("#contact"), box = $("#contactList");
+    if (!sec || !box) return;
+    const list = (resume.profile && resume.profile.contacts) || [];
+    const mailAddr = email(resume.profile);
+
+    const rows = [];
+    list.forEach(c => {
+      const val = c.mail ? mailAddr : c.v;
+      if (!val) return;
+      const node = el(c.copy ? "button" : "div", "ct-row",
+        '<span class="ct-ico">' + svg(c.icon || "pin") + "</span>" +
+        '<span class="ct-body"><span class="ct-k">' + esc(c.k) + "</span>" +
+        '<span class="ct-v">' + esc(val).replace(/@/g, "@<wbr>") + "</span></span>" +
+        (c.copy ? svgCls("copy", "cpy") : ""));
+      if (c.copy) {
+        node.type = "button";
+        node.title = "点击复制" + c.k;
+        node.setAttribute("aria-label", c.k + " " + val + "，点击复制");
+        node.addEventListener("click", () => copyText(val, c.k + "已复制：" + val));
+      }
+      rows.push(node);
+    });
+    if (!rows.length) { sec.remove(); return; }
+    rows.forEach(n => box.appendChild(n));
+
+    const mailBtn = $("#contactMail");
+    if (mailBtn) {
+      if (mailAddr) { mailBtn.href = "mailto:" + mailAddr; }
+      else mailBtn.remove();
+    }
+  }
+
   /* ---------- 渲染入口 ---------- */
   renderHighlights();
   buildTabs($("#expTabs"), resume.experience, expItem, "tl");
@@ -1512,12 +1636,14 @@ const resume = {
   renderEdu();
   renderAwards();
   renderSports();
+  renderContact();
   buildPrintDoc();
 
   /* ---------- 导航（按实际存在的区块生成，缺失自动隐藏） ---------- */
   const navMap = [
     ["about", "摘要"], ["highlights", "亮点"], ["experience", "经历"],
-    ["skills", "能力"], ["education", "教育"], ["sports", "运动"], ["awards", "获奖"]
+    ["skills", "能力"], ["education", "教育"], ["sports", "运动"], ["awards", "获奖"],
+    ["contact", "欢迎联系"]
   ];
   const navBox = $("#navLinks");
   navMap.forEach(([id, label]) => {
@@ -1538,6 +1664,9 @@ const resume = {
   let coverH = coverEl ? coverEl.offsetHeight : 0;
   const measureCover = () => { coverH = coverEl ? coverEl.offsetHeight : 0; };
 
+  /* 手机上导航是一条可横滑的列表，记录上一次高亮的区块，用于把它带进可视区 */
+  let lastActiveId = null;
+
   function onScroll() {
     const st = window.scrollY || document.documentElement.scrollTop;
     const h = document.documentElement.scrollHeight - window.innerHeight;
@@ -1554,6 +1683,18 @@ const resume = {
     const probe = st + window.innerHeight * 0.28;
     secs.forEach(s => { if (s.offsetTop <= probe) cur = s; });
     links.forEach(a => a.classList.toggle("active", !!cur && a.dataset.target === cur.id));
+
+    /* 手机端导航可横向滚动：只在「高亮项发生变化」时把它平滑带到可视区中间，
+       避免和用户的手动横滑打架（也只动导航自身，不会影响页面纵向滚动）。 */
+    if (cur && cur.id !== lastActiveId && navBox.scrollWidth > navBox.clientWidth + 4) {
+      const a = navBox.querySelector('a[data-target="' + cur.id + '"]');
+      if (a) {
+        const r = a.getBoundingClientRect(), c = navBox.getBoundingClientRect();
+        const delta = (r.left - c.left) - (c.width - r.width) / 2;
+        if (Math.abs(delta) > 8) navBox.scrollBy({ left: delta, behavior: "smooth" });
+      }
+    }
+    lastActiveId = cur ? cur.id : null;
   }
   let raf = 0;
   window.addEventListener("scroll", () => {
@@ -1723,10 +1864,13 @@ const resume = {
   }
 
   /* ---------- 打印 / 导出 PDF（打印的是 #printDoc 精简版） ---------- */
-  $("#printBtn").addEventListener("click", () => {
+  const doPrint = () => {
     showToast("正在准备打印简历…");
     setTimeout(() => window.print(), 260);
-  });
+  };
+  $("#printBtn").addEventListener("click", doPrint);
+  const contactPrintBtn = $("#contactPrint");
+  if (contactPrintBtn) contactPrintBtn.addEventListener("click", doPrint);
 
   /* ---------- 证书灯箱 ---------- */
   const lb = $("#lightbox"), lbImg = $("#lbImg"), lbCap = $("#lbCap");
