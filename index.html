@@ -301,7 +301,7 @@ button.ac-row:hover .cpy,button.ac-row:focus-visible .cpy{opacity:.55}
 
 .tl{position:relative;padding-left:26px}
 .tl::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;border-radius:2px;background:linear-gradient(180deg,var(--brand),var(--brand-2),transparent)}
-.tl-item{position:relative;padding:0 0 22px}
+.tl-item{position:relative;padding:0 0 22px 12px}
 .tl-item:last-child{padding-bottom:0}
 .tl-item::before{content:"";position:absolute;left:-23px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:2.5px solid var(--brand);box-shadow:0 0 0 4px var(--brand-soft)}
 .tl-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
@@ -389,6 +389,28 @@ button.ac-row:hover .cpy,button.ac-row:focus-visible .cpy{opacity:.55}
 .edu-item p{font-size:13.4px;color:var(--text-2);margin-top:6px}
 
 .awards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+/* ---------------- 作品卡片（在线作品 / 项目演示） ---------------- */
+.work-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.work-card{
+  padding:0;overflow:hidden;display:flex;flex-direction:column;color:inherit;text-decoration:none;
+  transition:transform var(--dur) var(--ease),box-shadow var(--dur) var(--ease),border-color var(--dur) var(--ease);
+}
+.work-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--brand)}
+.work-card:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.work-thumb{aspect-ratio:16/9;overflow:hidden;border-bottom:1px solid var(--border);background:#F6EDE3}
+.work-thumb svg{width:100%;height:100%;display:block}
+.work-card .body{padding:16px 18px 18px;display:flex;flex-direction:column;gap:7px;flex:1}
+.work-tag{
+  align-self:flex-start;display:inline-flex;align-items:center;gap:5px;
+  font-size:11.5px;font-weight:700;color:var(--brand);
+  background:var(--brand-soft);border:1px solid color-mix(in srgb,var(--brand) 22%,transparent);
+  padding:3px 9px;border-radius:99px;letter-spacing:.04em;
+}
+.work-card h4{margin:2px 0 0;font-size:16.5px;font-weight:800}
+.work-desc{font-size:13px;line-height:1.75;color:var(--text-2)}
+.work-links{margin-top:auto;padding-top:10px;display:flex;gap:14px;flex-wrap:wrap}
+.work-links span{font-size:13px;font-weight:700;color:var(--brand)}
+.work-links span.ghost{color:var(--text-2);font-weight:600}
 .award{padding:0;overflow:hidden;display:flex;flex-direction:column}
 .award .thumb{
   position:relative;aspect-ratio:3/4;background:var(--surface-2);border-bottom:1px solid var(--border);
@@ -700,6 +722,10 @@ footer a{color:var(--brand);font-weight:600}
   .grid-4{grid-template-columns:repeat(4,1fr) !important}
   .grid-5{grid-template-columns:repeat(5,1fr) !important}
   .awards{grid-template-columns:repeat(4,1fr) !important}
+  .work-grid{grid-template-columns:1fr !important}
+  .work-card{break-inside:avoid;page-break-inside:avoid}
+  .work-thumb{aspect-ratio:auto;height:170px}
+  .work-thumb svg{height:170px;width:auto;max-width:100%;margin:0 auto}
   .sport-card{grid-template-columns:1fr 150px !important;padding:16px;gap:14px}
   .sport-card .sc-shot{cursor:default}
   .sport-card .sc-shot img{height:290px;object-fit:cover;object-position:top}
@@ -878,6 +904,81 @@ footer a{color:var(--brand);font-weight:600}
   </section>
 
   <!-- ================= 获奖 ================= -->
+  <!-- ================= 作品（在线可玩的项目） ================= -->
+  <section id="works" hidden>
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div>
+          <span class="eyebrow">Works</span>
+          <h2>作品</h2>
+          <div class="sub">自己做并真正上线的项目，点卡片即可在线体验。</div>
+        </div>
+        <div class="line"></div>
+      </div>
+      <div class="work-grid">
+        <a class="card work-card reveal" href="https://zzt970.github.io/"
+           target="_blank" rel="noopener" aria-label="打开在线作品：个人简历网站">
+          <div class="work-thumb" aria-hidden="true">
+            <!-- 简历站界面示意（内联 SVG 绘制，浏览器窗口 + 排版骨架） -->
+            <svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg">
+              <rect width="640" height="360" fill="#EEF1FB"/>
+              <rect x="72" y="46" width="496" height="268" rx="14" fill="#FFFFFF" stroke="#D7DBE8"/>
+              <rect x="72" y="46" width="496" height="34" rx="14" fill="#F6F7FC"/>
+              <rect x="72" y="66" width="496" height="14" fill="#F6F7FC"/>
+              <circle cx="94" cy="63" r="5" fill="#F0A9A0"/>
+              <circle cx="112" cy="63" r="5" fill="#F2D49B"/>
+              <circle cx="130" cy="63" r="5" fill="#A9D8B4"/>
+              <rect x="96" y="104" width="132" height="22" rx="6" fill="#3B5BFD" opacity="0.92"/>
+              <rect x="96" y="140" width="300" height="10" rx="5" fill="#D9DEEC"/>
+              <rect x="96" y="160" width="252" height="10" rx="5" fill="#E4E8F3"/>
+              <rect x="96" y="192" width="200" height="56" rx="10" fill="#F6F7FC" stroke="#E1E5F0"/>
+              <rect x="312" y="192" width="200" height="56" rx="10" fill="#F6F7FC" stroke="#E1E5F0"/>
+              <rect x="96" y="264" width="416" height="10" rx="5" fill="#E4E8F3"/>
+              <rect x="96" y="284" width="360" height="10" rx="5" fill="#EEF0F8"/>
+            </svg>
+          </div>
+          <div class="body">
+            <span class="work-tag">独立开发 · 网页设计</span>
+            <h4>个人简历网站</h4>
+            <div class="work-desc">完整响应式简历站：锚点导航、深浅色模式、证书画廊与一键打印适配；单文件实现，图片全部内嵌，零外部依赖，GitHub Pages 直接托管。</div>
+          </div>
+        </a>
+        <a class="card work-card reveal" href="https://zzt970.github.io/cet4-word-game/"
+           target="_blank" rel="noopener" aria-label="打开在线作品：四级单词左右连线闯关">
+          <div class="work-thumb" aria-hidden="true">
+            <!-- 游戏界面示意（内联 SVG 绘制，与游戏实际配色一致） -->
+            <svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg">
+              <rect width="640" height="360" fill="#F6EDE3"/>
+              <text x="320" y="44" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="19" font-weight="700" fill="#4A423E">四级单词 · 左右连线闯关</text>
+              <line x1="272" y1="140" x2="368" y2="204" stroke="#D8B99B" stroke-width="2.5"/>
+              <line x1="272" y1="266" x2="368" y2="140" stroke="#E5DBCF" stroke-width="2.5"/>
+              <g font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="15" fill="#4A423E">
+                <rect x="64" y="118" width="208" height="44" rx="10" fill="#FFFFFF" stroke="#E5DBCF"/>
+                <text x="88" y="146">abandon</text>
+                <rect x="64" y="180" width="208" height="44" rx="10" fill="#F5E9DC" stroke="#D8B99B"/>
+                <text x="88" y="208">stable</text>
+                <rect x="64" y="242" width="208" height="44" rx="10" fill="#FFFFFF" stroke="#E5DBCF"/>
+                <text x="88" y="270">talk</text>
+                <rect x="368" y="118" width="208" height="44" rx="10" fill="#FFFFFF" stroke="#E5DBCF"/>
+                <text x="392" y="146">聊天；演讲</text>
+                <rect x="368" y="180" width="208" height="44" rx="10" fill="#FFFFFF" stroke="#E5DBCF"/>
+                <text x="392" y="208">放弃</text>
+                <rect x="368" y="242" width="208" height="44" rx="10" fill="#FFFFFF" stroke="#E5DBCF"/>
+                <text x="392" y="270">稳定的</text>
+              </g>
+            </svg>
+          </div>
+          <div class="body">
+            <span class="work-tag">独立开发 · Web 游戏</span>
+            <h4>四级单词左右连线闯关</h4>
+            <div class="work-desc">面向四级备考的背单词小游戏：4544 词大纲词库按难度分档，左右连线配对闯关，错词自动标记并生成复习清单；原生 HTML/CSS/JS 实现，无框架无后端，Web Audio 现场合成音效，localStorage 持久化练习进度。</div>
+            <div class="work-links"><span>在线试玩 ↗</span></div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
   <section id="awards" hidden>
     <div class="wrap">
       <div class="sec-head reveal">
@@ -1634,6 +1735,12 @@ const resume = {
   buildTabs($("#projTabs"), resume.projects, projItem, "grid-2");
   renderSkills();
   renderEdu();
+  /* ---------- 作品（静态卡片，显示区块即可） ---------- */
+  function renderWorks() {
+    const sec = $("#works");
+    if (sec) sec.hidden = false;
+  }
+  renderWorks();
   renderAwards();
   renderSports();
   renderContact();
@@ -1642,7 +1749,7 @@ const resume = {
   /* ---------- 导航（按实际存在的区块生成，缺失自动隐藏） ---------- */
   const navMap = [
     ["about", "摘要"], ["highlights", "亮点"], ["experience", "经历"],
-    ["skills", "能力"], ["education", "教育"], ["sports", "运动"], ["awards", "获奖"],
+    ["skills", "能力"], ["education", "教育"], ["sports", "运动"], ["works", "作品"], ["awards", "获奖"],
     ["contact", "欢迎联系"]
   ];
   const navBox = $("#navLinks");
@@ -1837,6 +1944,15 @@ const resume = {
             (g.note ? '<div class="pd-note">' + esc(g.note) + "</div>" : "") + "</div>");
         });
       }
+
+      /* 作品（在线可玩） */
+      H.push("<h2>作品</h2>");
+      H.push('<div class="pd-item"><div class="pd-line"><b>个人简历网站</b>' +
+        "<span>独立开发 · 网页设计</span></div>" +
+        '<div class="pd-meta">在线访问：https://zzt970.github.io/</div></div>');
+      H.push('<div class="pd-item"><div class="pd-line"><b>四级单词左右连线闯关</b>' +
+        "<span>独立开发 · Web 游戏</span></div>" +
+        '<div class="pd-meta">在线试玩：https://zzt970.github.io/cet4-word-game/</div></div>');
 
       /* 运动与课外 */
       const sp = resume.sports || [];
